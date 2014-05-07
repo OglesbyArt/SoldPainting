@@ -1,45 +1,17 @@
-SoldPainting
-============
 package artpricingsystem;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Date;
 import java.util.Scanner;
 
-/**
- *
- * @author jessicaspalding
- */
 public class SoldPainting extends BoughtPainting
 {
     private Date dateOfSale;
     private String nameOfBuyer;
     private String addressOfBuyer;
     private double actualSellingPrice; 
-
-    //Desc: constructor for BoughtPainting
-    //Post: allow class to set the value of all Bought Painting fields in a record
-    /*SoldPainting(String fname, String lname, String work, Date dwork, 
-    String clas, double h, double w, String med, String sub, double max, 
-    Date d, String n, String a, double p, double t)
-    {
-        artistFirstName=fname;
-        artistLastName=lname;
-        titleOfWork=work;
-        dateOfWork=dwork;
-        classification=clas;
-        height=h;
-        width=w;
-        medium=med;
-        subject=sub;
-        suggestedMaxPurchPrice=max;
-        dateOfPurchase=d;
-        nameOfSeller=n;
-        addressOfSeller=a;
-        actualPurchasePrice=p;
-        targetSellingPrice=t;
-    } */
     
     //Desc: constructor for SoldPainting
     //Post: allows class to set the value of the dateOfSale, nameOfBuyer,
@@ -58,7 +30,7 @@ public class SoldPainting extends BoughtPainting
         width=w;
         medium=med;
         subject=sub;
-        suggestedMaxPurchPrice=max;
+        suggestedMaximumPurchasePrice=max;
         dateOfPurchase=dop;
         nameOfSeller=nos;
         addressOfSeller=aos;
@@ -131,13 +103,12 @@ public class SoldPainting extends BoughtPainting
 	
     //Desc:Updates the current record to a new dateOfSale field
     //Post: dateOfSale field is updated
-    public void updateDateOfSale()  //need to fix
+    public void updateDateOfSale()  
     {
         System.out.println("Old Date Of Sale:" + dateOfSale);
-        System.out.println("Please enter new Date Of Sale");
-        Scanner input=new Scanner(System.in);
-        Date tempdos = new Date (input.toString ());
-        dateOfSale=tempdos;
+        System.out.println("Please enter new Date Of Sale and press <ENTER>: \n");
+        Date dos=new Date(UserInterface.getString());
+        dateOfSale=dos;
     }
 
     //Desc: Updates the current record to a new nameOfBuyer field
@@ -145,9 +116,8 @@ public class SoldPainting extends BoughtPainting
     public void updateNameOfBuyer()
     {
         System.out.println("Old Name of Buyer:" + nameOfBuyer);
-        System.out.println("Please enter new Name of Buyer");
-        Scanner input=new Scanner(System.in);
-        nameOfBuyer=input.toString();
+        System.out.println("Please enter new Name of Buyer and press <ENTER>: \n");
+        nameOfBuyer=UserInterface.getString();
     }
 
     //Desc: Updates the current record to a new addressOfBuyer field
@@ -155,9 +125,8 @@ public class SoldPainting extends BoughtPainting
     public void updateAddressOfBuyer()
     {
         System.out.println("Old Address of Buyer:" + addressOfBuyer);
-        System.out.println("Please enter new Address of Buyer");
-        Scanner input=new Scanner(System.in);
-        addressOfBuyer=input.toString();
+        System.out.println("Please enter new Address of Buyer and press <ENTER>: \n");
+        addressOfBuyer=UserInterface.getString();
     }
 
     //Desc: Updates the current record to a new actualSellingPrice field
@@ -166,10 +135,41 @@ public class SoldPainting extends BoughtPainting
     {
         System.out.println("Old Actual Selling Price:" + actualSellingPrice);
         System.out.println("Please enter new actualSellingPrice");
-        Scanner input=new Scanner(System.in);
-        Double tempactual = new Double (input.toString ());
-        actualSellingPrice=tempactual;
+        double tempprice=new Double(UserInterface.getString());
+        actualSellingPrice=tempprice;
 
+    }
+    
+    //Desc: uses the last name of an artist and the title of work to find the
+    // 		 Bought Painting record
+    //Return: returns true if painting record is found, false if not
+    
+    public boolean find(String alastname, String title)
+    {
+        try
+        {
+            File paintingsFile = new File ("GalleryPaintings.dat");
+            boolean found = false;
+            if (paintingsFile.exists())
+            {
+                RandomAccessFile inFile = new RandomAccessFile (paintingsFile, "r");
+                while (!found && (inFile.getFilePointer()!=inFile.length()))
+                {
+                    read (inFile);
+                    if (artistLastName.equalsIgnoreCase(alastname) && 
+                    titleOfWork.equalsIgnoreCase(title))
+                        found = true;       
+                }
+                inFile.close();
+            }
+            return found;
+        }
+        catch (Exception e)
+        {
+            System.out.println ("***** Error: Investment.find () *****");
+            System.out.println ("\t" + e);
+            return false;
+        }
     }
 
     //Desc: reads a file into the scanner, sets each field in the text file to 
@@ -273,7 +273,7 @@ public class SoldPainting extends BoughtPainting
               i++;
             }
             Double tempmax = new Double (input.toString ());
-            suggestedMaxPurchPrice = tempmax;
+            suggestedMaximumPurchasePrice = tempmax;
             i++;
             
             input = new StringBuffer ();
@@ -363,32 +363,57 @@ public class SoldPainting extends BoughtPainting
             i++;             
    
         }
-        /*    private Date dateOfSale;
-    private String nameOfBuyer;
-    private String addressOfBuyer;
-    private double actualSellingPrice; */
         catch (Exception e)
         {
             System.out.println ("***** Error: Arist.read () *****");
             System.out.println ("\t" + e);
         }
-
     }
 	
+     	public void write(RandomAccessFile fileName)
+        {
+            try
+            {
+                fileName.writeBytes(artistFirstName + "|");
+                fileName.writeBytes(artistLastName + "|");
+                fileName.writeBytes(titleOfWork + "|");
+                fileName.writeBytes(dateOfWork + "|");
+                fileName.writeBytes(classification + "|");
+                fileName.writeBytes(height + "|");
+                fileName.writeBytes(width + "|");
+                fileName.writeBytes(medium + "|");
+                fileName.writeBytes(subject + "|");
+                fileName.writeBytes(suggestedMaximumPurchasePrice + "|");
+                fileName.writeBytes(dateOfPurchase + "|");
+                fileName.writeBytes(nameOfSeller + "|");
+                fileName.writeBytes(addressOfSeller + "|");
+                fileName.writeBytes(actualPurchasePrice + "|");
+                fileName.writeBytes(targetSellingPrice + "|");
+                fileName.writeBytes(dateOfSale + "|");
+                fileName.writeBytes(nameOfBuyer + "|");
+                fileName.writeBytes(addressOfBuyer + "|");
+                fileName.writeBytes(actualSellingPrice + "|"+"\n");
+                //double check that this writes doubles, ints, and dates correctly
+            }
+            catch (IOException e)
+            {
+                System.out.println ("***** Error: SoldPainting.write () *****");
+                System.out.println ("\t" + e);
+            }
+        }
+    
     //Desc: writes the record back to the text file and prompts 
     //      the user the data has been saved
     //Post: changes the text file
-    public void save()
+   public void save()
     {
         try
         {
-            File paintingsFile = new File ("GalleryPaintings.dat");	// file of artist
-            File  temppaintingsFile = new File ("GalleryPaintings.tmp");	// temporary file for artist
-
-            SoldPainting tempSoldPainting = new SoldPainting();	// record read, then written
-            boolean found = false;		// terminates while-loop
-
-            RandomAccessFile newFile = new RandomAccessFile (temppaintingsFile, "rw");
+            File paintingsFile = new File ("GalleryPaintings.dat");	
+            File  tempPaintingsFile = new File ("GalleryPaintings.tmp");	
+            BoughtPainting tempPainting = new BoughtPainting ();	
+            boolean found = false;		
+            RandomAccessFile newFile = new RandomAccessFile (tempPaintingsFile, "rw");
 
             if (!paintingsFile.exists ())
             {
@@ -397,46 +422,75 @@ public class SoldPainting extends BoughtPainting
             else
             {
                 RandomAccessFile oldFile = new RandomAccessFile (paintingsFile, "r");
-
-                int comparePaintings; // to find correct place for the new investment
-
-                while (oldFile.getFilePointer () != oldFile.length ()) //the pointer hasn't reached the end of the file
+                boolean comparePaintings;
+                while (oldFile.getFilePointer () != oldFile.length ()) 
                 {
-                    tempSoldPainting.read(oldFile); //read walks through each field in the record
-
-                    if (artistLastName.equals(tempSoldPainting.getArtistLastName())
-                        && titleOfWork.equals(tempSoldPainting.getTitleofWork()))
-                        comparePaintings=1;
-                    else comparePaintings=0;
-
-                    if (comparePaintings ==1) 
+                    tempPainting.read(oldFile);
+                    if (artistLastName.equalsIgnoreCase(tempPainting.getArtistsLastName()) &&
+                    titleOfWork.equalsIgnoreCase(tempPainting.getTitleofWork()))
+                        comparePaintings=true;
+                    else comparePaintings=false;
+                    if(comparePaintings) 
                     {
-                        write (newFile); //replaces old file record with new file record
+                        write (newFile); 
+                        found=true;
                     } 
                     else
                     {
-                      tempSoldPainting.write (newFile); //writes to 2nd temp file
+                      tempPainting.write(newFile); 
                     }
-              }  // while
-
-              //if (compareArist==0) write (newFile); // if never found in file, write to temp file
+                }  
+                if (!found) write (newFile); 
 
               oldFile.close ();
 
-            }  // else
+            }
 
             newFile.close ();
 
             paintingsFile.delete ();
-            temppaintingsFile.renameTo (paintingsFile);
-            System.out.println("record saved");
+            tempPaintingsFile.renameTo (paintingsFile);
+            System.out.println("record saved to file");
 
           }
           catch (Exception e)
           {
-              System.out.println ("***** Error: Artist.putRecord () *****");
+              System.out.println ("***** Error: SoldPainting.putRecord () *****");
               System.out.println ("\t" + e);
           }
+      }
+    
+    
+    public void performDeletion()
+    {
+        //need to write this!!!
     }
     
+    public void readInRecord()
+    {
+        //grab this from the UI class!
+    }
+    
+    public void print ()
+    {
+      System.out.print ("Artist First Name: " + artistFirstName);
+      System.out.print ("\t Artist Last Name: " + artistLastName);
+      System.out.print ("\t Title Of Work: " + titleOfWork);
+      System.out.print ("\t Date Of Work: " + dateOfWork);
+      System.out.print ("\t Classification: " + classification);
+      System.out.print ("\t Height: " + height);
+      System.out.print ("\t Width: " + width);
+      System.out.print ("\t Medium: " + medium);
+      System.out.print ("\t Subject: " + subject);
+      System.out.print ("\t Suggested Max Purchase Price: " + suggestedMaximumPurchasePrice);
+      System.out.print ("\t Date Of Purchase: " + dateOfPurchase);
+      System.out.print ("\t Name Of Seller: " + nameOfSeller);    
+      System.out.print ("\t Address Of Seller: " + addressOfSeller);    
+      System.out.print ("\t Actual Purchase Price: " + actualPurchasePrice); 
+      System.out.print ("\t Target Selling Price: " + targetSellingPrice);  
+      System.out.print ("\t Date of Sale: " + dateOfSale); 
+      System.out.print ("\t Name of Buyer: " + nameOfBuyer); 
+      System.out.print ("\t Address of Buyer: " + addressOfBuyer); 
+      System.out.print ("\t Actual Selling Price: " + actualSellingPrice); 
+    } 
 }
