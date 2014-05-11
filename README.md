@@ -1,10 +1,8 @@
 package artpricingsystem;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Date;
-import java.util.Scanner;
 
 public class SoldPainting extends BoughtPainting
 {
@@ -150,6 +148,11 @@ public class SoldPainting extends BoughtPainting
         System.out.println("Old Name of Buyer:" + nameOfBuyer);
         System.out.println("Please enter new Name of Buyer and press <ENTER>: ");
         nameOfBuyer=UserInterface.getString();
+        while(nameOfBuyer.length()>30) 
+        {
+            System.out.println("Name of buyer exceeds 30 characters. Please enter shortened name:");
+            nameOfBuyer=UserInterface.getString();
+        }         
     }
 
     //Desc: Updates the current record to a new addressOfBuyer field
@@ -159,6 +162,11 @@ public class SoldPainting extends BoughtPainting
         System.out.println("Old Address of Buyer:" + addressOfBuyer);
         System.out.println("Please enter new Address of Buyer and press <ENTER>:");
         addressOfBuyer=UserInterface.getString();
+        while(addressOfBuyer.length()>30) 
+        {
+            System.out.println("Address of buyer exceeds 40 characters. Please enter shortened address:");
+            addressOfBuyer=UserInterface.getString();
+        } 
     }
 
     //Desc: Updates the current record to a new actualSellingPrice field
