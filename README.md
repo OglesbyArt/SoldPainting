@@ -6,10 +6,10 @@ import java.util.Date;
 
 public class SoldPainting extends BoughtPainting
 {
-    private Date dateOfSale;
-    private String nameOfBuyer;
-    private String addressOfBuyer;
-    private double actualSellingPrice; 
+    protected Date dateOfSale;
+    protected String nameOfBuyer;
+    protected String addressOfBuyer;
+    protected double actualSellingPrice; 
     
     //Desc: constructor for SoldPainting
     //Post: allows class to set the value of the dateOfSale, nameOfBuyer,
