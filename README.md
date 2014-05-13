@@ -380,6 +380,15 @@ public class SoldPainting extends BoughtPainting
             i++;             
    
         }
+        
+        catch (StringIndexOutOfBoundsException e)
+        {
+            dateOfSale=new Date();
+            nameOfBuyer = "";
+            addressOfBuyer = "";
+            actualSellingPrice = 0.0;
+        }
+        
         catch (Exception e)
         {
             System.out.println ("***** Error: Arist.read () *****");
